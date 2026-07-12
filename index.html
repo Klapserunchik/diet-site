@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1500 · Питание в Ереване</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --bg-soft:#f7faf8;
+  --green-50:#eef8f1;
+  --green-100:#dcf1e3;
+  --green-300:#a9e0bb;
+  --green-500:#5cbf7f;
+  --green-600:#3fa668;
+  --green-700:#2f8555;
+  --ink:#1c2521;
+  --ink-soft:#5c6b63;
+  --line:#e6ede9;
+  --red:#e2745a;
+  --amber:#d9a441;
+  --shadow: 0 2px 10px rgba(28,37,33,0.06), 0 1px 2px rgba(28,37,33,0.04);
+  --shadow-lg: 0 12px 32px rgba(28,37,33,0.10);
+  --radius: 18px;
+}
+html[data-theme="dark"]{
+  --bg:#161c19;
+  --bg-soft:#101512;
+  --green-50:#1b2a22;
+  --green-100:#213626;
+  --green-300:#2f5a3f;
+  --green-500:#4fb377;
+  --green-600:#5cc986;
+  --green-700:#7fe0a4;
+  --ink:#eaf1ec;
+  --ink-soft:#93a49a;
+  --line:#28332d;
+  --red:#e2745a;
+  --amber:#d9a441;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.45);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-soft);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 84px;
+  transition: background .2s ease, color .2s ease;
+}
+h1,h2,h3,h4{margin:0; font-weight:700; letter-spacing:-0.01em;}
+p{margin:0;}
+button{font-family:inherit;}
+::selection{background:var(--green-300);}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background: var(--topbar-bg, rgba(255,255,255,0.92));
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--line);
+  padding: 14px 18px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.topbar-actions{display:flex; align-items:center; gap:8px;}
+.theme-btn{
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+  background:var(--green-50); display:flex;align-items:center;justify-content:center;
+  cursor:pointer; color:var(--green-700);
+}
+.theme-btn svg{width:18px;height:18px;}
+.theme-btn .icon-moon{display:none;}
+html[data-theme="dark"] .theme-btn .icon-sun{display:none;}
+html[data-theme="dark"] .theme-btn .icon-moon{display:block;}
+html[data-theme="dark"]{ --topbar-bg: rgba(22,28,25,0.92); --tabbar-bg: rgba(22,28,25,0.94); }
+.brand{display:flex; align-items:center; gap:10px;}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;
+  background: linear-gradient(135deg, var(--green-500), var(--green-700));
+  display:flex;align-items:center;justify-content:center;
+  color:white; font-weight:800; font-size:14px;
+}
+.brand-title{font-size:16px; font-weight:800;}
+.brand-sub{font-size:11px; color:var(--ink-soft); margin-top:-2px;}
+.search-btn{
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+  background:var(--green-50); display:flex;align-items:center;justify-content:center;
+  cursor:pointer; color:var(--green-700);
+}
+
+/* ---------- Container ---------- */
+.container{max-width:720px; margin:0 auto; padding:16px;}
+.screen{display:none; animation: fade .25s ease;}
+.screen.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--bg); border-radius:var(--radius); box-shadow:var(--shadow);
+  border:1px solid var(--line);
+}
+.section-title{font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); font-weight:700; margin: 22px 4px 10px;}
+.section-title:first-child{margin-top:4px;}
+
+/* ---------- Today screen ---------- */
+.today-hero{
+  padding:22px; margin-bottom:16px;
+  background: linear-gradient(160deg, var(--green-50), var(--bg) 70%);
+}
+.ring-wrap{display:flex; align-items:center; gap:20px;}
+.ring{position:relative; width:118px; height:118px; flex-shrink:0;}
+.ring svg{transform:rotate(-90deg);}
+.ring-track{fill:none; stroke:var(--green-100); stroke-width:12;}
+.ring-progress{fill:none; stroke:var(--green-500); stroke-width:12; stroke-linecap:round; transition:stroke-dashoffset .5s ease, stroke .3s ease;}
+.ring-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.ring-num{font-size:26px; font-weight:800; line-height:1;}
+.ring-label{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+.today-stats{flex:1;}
+.today-stats h2{font-size:20px; margin-bottom:6px;}
+.today-stats .muted{color:var(--ink-soft); font-size:13.5px; line-height:1.5;}
+
+.meal-plan{padding:16px; margin-bottom:14px;}
+.meal-plan-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+.meal-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 4px; border-bottom:1px solid var(--line);
+}
+.meal-row:last-child{border-bottom:none;}
+.meal-row-left{display:flex; align-items:center; gap:12px;}
+.meal-dot{width:10px;height:10px;border-radius:50%; background:var(--green-400, var(--green-500));}
+.meal-name{font-size:14.5px; font-weight:600;}
+.meal-target{font-size:12px; color:var(--ink-soft);}
+.meal-eaten{font-size:13px; font-weight:700; color:var(--green-700);}
+.add-log-btn{
+  width:100%; padding:14px; border-radius:14px; border:none; margin-top:6px;
+  background: var(--green-500); color:white; font-weight:700; font-size:14.5px;
+  cursor:pointer; box-shadow: 0 6px 16px rgba(92,191,127,.35);
+}
+.add-log-btn:active{transform:scale(.98);}
+.log-list{padding:16px;}
+.log-item{display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);}
+.log-item:last-child{border-bottom:none;}
+.log-item-name{font-size:14px; font-weight:600;}
+.log-item-meta{font-size:12px; color:var(--ink-soft);}
+.log-item-kcal{font-weight:700; font-size:14px;}
+.remove-x{color:var(--red); font-size:18px; cursor:pointer; margin-left:10px; line-height:1;}
+.empty-hint{color:var(--ink-soft); font-size:13.5px; text-align:center; padding:18px 6px;}
+
+/* ---------- Tabs / nav ---------- */
+.tabbar{
+  position:fixed; bottom:0; left:0; right:0; z-index:60;
+  background:var(--tabbar-bg, rgba(255,255,255,0.94)); backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  display:flex; padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+}
+.tab-btn{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:none; border:none; padding:8px 2px; cursor:pointer;
+  color:var(--ink-soft); font-size:10.5px; font-weight:600; border-radius:12px;
+}
+.tab-btn.active{color:var(--green-700);}
+.tab-btn svg{width:21px; height:21px;}
+
+/* ---------- Filters ---------- */
+.filter-bar{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.chip{
+  white-space:nowrap; padding:9px 14px; border-radius:999px; border:1px solid var(--line);
+  background:var(--bg); font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+  flex-shrink:0;
+}
+.chip.active{background:var(--green-500); border-color:var(--green-500); color:white;}
+.search-input-wrap{position:relative; margin-bottom:12px;}
+.search-input{
+  width:100%; padding:13px 16px 13px 42px; border-radius:14px; border:1px solid var(--line);
+  background:var(--bg); font-size:14.5px; outline:none;
+}
+.search-input:focus{border-color:var(--green-500);}
+.search-icon{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-soft);}
+
+/* ---------- Place cards ---------- */
+.place-card{padding:16px; margin-bottom:12px; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;}
+.place-card:active{transform:scale(.985);}
+.place-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+.place-name{font-size:16px; font-weight:700;}
+.place-cat{font-size:12px; color:var(--green-700); font-weight:600; margin-top:1px;}
+.fav-btn{
+  border:none; background:none; cursor:pointer; color:var(--ink-soft); flex-shrink:0; padding:4px;
+}
+.fav-btn.active{color:var(--red);}
+.place-addr{font-size:13px; color:var(--ink-soft); margin-top:8px; display:flex; gap:6px; align-items:flex-start;}
+.place-meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+.meta-tag{
+  font-size:11.5px; background:var(--green-50); color:var(--green-700); font-weight:600;
+  padding:5px 10px; border-radius:999px;
+}
+.meta-tag.dist{background:var(--bg-soft); color:var(--ink-soft);}
+.place-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:12px;}
+.stars{color:var(--amber); font-size:13px; font-weight:700;}
+.price-range{font-size:13px; color:var(--ink-soft); font-weight:600;}
+
+/* ---------- Detail screen ---------- */
+.detail-header{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+.back-btn{
+  width:36px;height:36px;border-radius:11px; border:1px solid var(--line); background:var(--bg);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+}
+.detail-links{display:flex; gap:10px; margin-top:14px;}
+.link-btn{
+  flex:1; text-align:center; padding:12px; border-radius:12px; text-decoration:none; font-weight:700; font-size:13.5px;
+  border:1px solid var(--line); color:var(--ink);
+}
+.link-btn.primary{background:var(--green-500); color:white; border-color:var(--green-500);}
+
+.dish-card{
+  display:flex; justify-content:space-between; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line);
+}
+.dish-card:last-child{border-bottom:none;}
+.dish-name{font-size:14.5px; font-weight:700;}
+.dish-macros{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+.dish-badge{font-size:12px; margin-top:6px; font-weight:700;}
+.dish-right{display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0;}
+.dish-kcal{font-size:15px; font-weight:800; color:var(--green-700);}
+.dish-price{font-size:12px; color:var(--ink-soft);}
+.dish-actions{display:flex; gap:6px;}
+.icon-btn{
+  width:30px;height:30px; border-radius:9px; border:1px solid var(--line); background:var(--bg);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft);
+}
+.icon-btn.active{color:var(--red); border-color:var(--red);}
+.icon-btn.add{color:var(--green-700);}
+
+/* ---------- Product grid ---------- */
+.product-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.product-card{padding:13px; display:flex; flex-direction:column; gap:6px;}
+.product-name{font-size:13.5px; font-weight:700; line-height:1.25;}
+.product-store{font-size:11px; color:var(--green-700); font-weight:600;}
+.product-macros{font-size:11px; color:var(--ink-soft); line-height:1.5;}
+.product-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:4px;}
+.product-price{font-size:12.5px; font-weight:700;}
+.product-kcal{font-size:12.5px; font-weight:800; color:var(--green-700);}
+
+/* ---------- Modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,28,24,0.45); z-index:100;
+  display:none; align-items:flex-end; justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--bg); width:100%; max-width:560px; border-radius:22px 22px 0 0;
+  padding:20px; max-height:82vh; overflow-y:auto;
+  animation: slideup .25s ease;
+}
+@keyframes slideup{from{transform:translateY(30px); opacity:.6;} to{transform:translateY(0); opacity:1;}}
+.modal-handle{width:38px; height:4px; background:var(--line); border-radius:99px; margin:0 auto 16px;}
+.modal-title{font-size:18px; margin-bottom:14px;}
+.meal-pick{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;}
+.meal-pick-btn{
+  padding:14px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg);
+  font-weight:700; font-size:13.5px; cursor:pointer; text-align:left;
+}
+.meal-pick-btn.sel{border-color:var(--green-500); background:var(--green-50); color:var(--green-700);}
+.modal-search-list{max-height:300px; overflow-y:auto; margin-top:10px;}
+.modal-row{display:flex; justify-content:space-between; align-items:center; padding:11px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
+.modal-row:hover{background:var(--green-50);}
+.modal-row-name{font-size:13.5px; font-weight:600;}
+.modal-row-meta{font-size:11.5px; color:var(--ink-soft);}
+.modal-close-btn{
+  width:100%; padding:14px; border-radius:14px; border:none; margin-top:14px;
+  background:var(--bg-soft); color:var(--ink); font-weight:700; font-size:14px; cursor:pointer;
+}
+
+.empty-state{text-align:center; padding:50px 20px; color:var(--ink-soft);}
+.empty-state svg{margin-bottom:12px; opacity:.4;}
+.empty-state p{font-size:14px;}
+
+.hidden{display:none !important;}
+.toast{
+  position:fixed; bottom:96px; left:50%; transform:translateX(-50%);
+  background:var(--ink); color:white; padding:11px 18px; border-radius:12px; font-size:13.5px;
+  z-index:200; box-shadow:var(--shadow-lg); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+@media (min-width:560px){
+  .product-grid{grid-template-columns:1fr 1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">1500</div>
+    <div>
+      <div class="brand-title">Питание в Ереване</div>
+      <div class="brand-sub">AUA · Ordo Learning Hub</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Переключить тему">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.5 12H2M22 12h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg>
+    </button>
+    <button class="search-btn" onclick="goTab('search')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SEGODNYA -->
+  <div class="screen active" id="screen-today">
+    <div class="card today-hero">
+      <div class="ring-wrap">
+        <div class="ring">
+          <svg width="118" height="118" viewBox="0 0 118 118">
+            <circle class="ring-track" cx="59" cy="59" r="50"></circle>
+            <circle class="ring-progress" id="ringProgress" cx="59" cy="59" r="50" stroke-dasharray="314" stroke-dashoffset="314"></circle>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-num" id="ringNum">1500</div>
+            <div class="ring-label">осталось</div>
+          </div>
+        </div>
+        <div class="today-stats">
+          <h2>Сегодня</h2>
+          <p class="muted" id="todaySummary">Съедено 0 из 1500 ккал</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card meal-plan">
+      <div class="meal-plan-head">
+        <h3 style="font-size:15px;">План на день</h3>
+        <span style="font-size:12px; color:var(--ink-soft);">≈1500 ккал</span>
+      </div>
+      <div id="mealPlanList"></div>
+      <button class="add-log-btn" onclick="openLogModal()">+ Записать приём пищи</button>
+    </div>
+
+    <div class="section-title">Съедено сегодня</div>
+    <div class="card log-list" id="logList"></div>
+  </div>
+
+  <!-- KARTA -->
+  <div class="screen" id="screen-map">
+    <div class="search-input-wrap">
+      <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <input class="search-input" placeholder="Кафе, блюдо, район..." id="mapSearch" oninput="renderPlaces()">
+    </div>
+    <div class="filter-bar" id="mapFilters"></div>
+    <div id="placesList"></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="screen" id="screen-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="goTab('map')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h3 id="detailName" style="font-size:18px;"></h3>
+    </div>
+    <div id="detailCardWrap"></div>
+    <div class="section-title">Что можно заказать</div>
+    <div class="card" id="detailDishes"></div>
+  </div>
+
+  <!-- MAGAZINY -->
+  <div class="screen" id="screen-shops">
+    <div class="search-input-wrap">
+      <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <input class="search-input" placeholder="Продукт..." id="shopSearch" oninput="renderProducts()">
+    </div>
+    <div class="filter-bar" id="shopFilters"></div>
+    <div class="product-grid" id="productsGrid"></div>
+  </div>
+
+
+  <!-- SEARCH (global) -->
+  <div class="screen" id="screen-search">
+    <div class="search-input-wrap">
+      <span class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <input class="search-input" placeholder="Искать блюда, кафе, продукты..." id="globalSearch" oninput="renderGlobalSearch()" autofocus>
+    </div>
+    <div id="globalResults"></div>
+  </div>
+
+  <!-- FAVORITES -->
+  <div class="screen" id="screen-fav">
+    <div class="section-title">Любимые блюда и места</div>
+    <div id="favList"></div>
+  </div>
+
+</div>
+
+<div class="tabbar">
+  <button class="tab-btn active" data-tab="today" onclick="goTab('today')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+    Сегодня
+  </button>
+  <button class="tab-btn" data-tab="map" onclick="goTab('map')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/></svg>
+    Карта еды
+  </button>
+  <button class="tab-btn" data-tab="shops" onclick="goTab('shops')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10h16V9"/><path d="M9 21v-6h6v6"/></svg>
+    Магазины
+  </button>
+  <button class="tab-btn" data-tab="fav" onclick="goTab('fav')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+    Избранное
+  </button>
+</div>
+
+<div class="modal-overlay" id="logModalOverlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 class="modal-title">Что вы съели?</h3>
+    <div class="meal-pick" id="mealPickWrap"></div>
+    <input class="search-input" id="logSearchInput" placeholder="Поиск блюда или продукта..." oninput="renderLogSearch()">
+    <div class="modal-search-list" id="logSearchList"></div>
+    <button class="modal-close-btn" onclick="closeLogModal()">Закрыть</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ДАННЫЕ
+   Все места — реальные заведения рядом с AUA (просп. Баграмяна 40)
+   и Ordo Learning Hub (ул. Амиряна 4/6), Ереван.
+   Расстояния — расчётные (по прямой + поправка на пешую сеть улиц), ккал/БЖУ блюд —
+   приблизительные оценки на основе типового состава блюда, если точных данных нет.
+   ========================================================= */
+
+const CAFES = [
+  {id:"bezjian", name:"Cafeteria Albert & Terry Bezjian", category:"Столовая AUA (2 этаж главного корпуса)", address:"AUA Main Building, просп. Баграмяна 40", auaDist:"0 км · на территории", ordoDist:"1.3 км · 17 мин", price:"$", rating:null, maps:"https://www.google.com/maps/search/?api=1&query=American+University+of+Armenia+Baghramyan+40", menu:"https://aua.am/dining/",
+    note:"Официальное меню и цены AUA не публикует онлайн. Часы работы: Пн–Пт 9:00–20:00, Сб 9:00–17:00. Для не-студентов нужна карта столовой. Блюда ниже — типичные позиции для формата «домашняя кухня», указаны приблизительно.",
+    dishes:[
+      {name:"Куриная грудка с гарниром из овощей", kcal:340, p:35, f:12, c:18, price:1800, fit:5},
+      {name:"Овощной салат (сезонный)", kcal:130, p:3, f:6, c:14, price:600, fit:5},
+      {name:"Суп-пюре чечевичный", kcal:190, p:9, f:5, c:26, price:700, fit:4},
+      {name:"Рис с овощами (гарнир)", kcal:220, p:5, f:4, c:42, price:500, fit:4},
+      {name:"Долма (3 шт.)", kcal:260, p:9, f:12, c:26, price:900, fit:3},
+      {name:"Котлета куриная на пару", kcal:230, p:26, f:12, c:4, price:1000, fit:4},
+      {name:"Плов с курицей (порция)", kcal:420, p:20, f:14, c:52, price:1400, fit:2},
+    ]},
+  {id:"prepa", name:"Prepa", category:"Healthy fast food (кампус AUA)", address:"AUA Main Building, просп. Баграмяна 40", auaDist:"0 км · на территории", ordoDist:"1.3 км · 17 мин", price:"$$", rating:null, maps:"https://www.google.com/maps/search/?api=1&query=American+University+of+Armenia+Baghramyan+40", menu:"https://aua.am/dining/",
+    note:"Официальное меню и цены AUA не публикует онлайн. Часы работы: Пн–Пт 8:00–20:00. Prepa позиционируется как здоровый фастфуд с акцентом на белок, клетчатку и полезные жиры — блюда ниже приблизительные, по типичному формату сети.",
+    dishes:[
+      {name:"Боул с курицей гриль и киноа", kcal:380, p:32, f:12, c:36, price:2400, fit:5},
+      {name:"Боул с лососем и авокадо", kcal:420, p:26, f:22, c:28, price:3200, fit:4},
+      {name:"Салат с тунцом и яйцом", kcal:280, p:26, f:14, c:12, price:2200, fit:5},
+      {name:"Протеиновый смузи (банан + арахис)", kcal:260, p:18, f:8, c:30, price:1800, fit:4},
+      {name:"Ролл с индейкой и овощами", kcal:340, p:22, f:10, c:38, price:2000, fit:4},
+      {name:"Энергетический батончик без сахара", kcal:190, p:8, f:9, c:20, price:900, fit:4},
+    ]},
+  {id:"tunlahmajo", name:"Tun Lahmajo", category:"Армянская кухня", address:"ул. Терьяна 23", auaDist:"0.9 км · 11 мин", ordoDist:"0.4 км · 5 мин", price:"$$", rating:4.1, maps:"https://www.google.com/maps/search/?api=1&query=Tun+Lahmajo+Yerevan", menu:null,
+    dishes:[
+      {name:"Куриная грудка гриль с овощами", kcal:320, p:38, f:10, c:12, price:2500, fit:5},
+      {name:"Овощной салат (огурцы, помидоры, зелень)", kcal:140, p:3, f:6, c:16, price:1200, fit:5},
+      {name:"Суп спас (йогуртовый)", kcal:180, p:7, f:6, c:22, price:1000, fit:4},
+      {name:"Шашлык из курицы (2 шампура)", kcal:380, p:42, f:18, c:4, price:2800, fit:4},
+      {name:"Айран", kcal:70, p:3, f:3, c:5, price:400, fit:5},
+      {name:"Лахмаджо (1 шт.)", kcal:290, p:12, f:10, c:36, price:900, fit:3},
+      {name:"Омлет с помидорами", kcal:230, p:14, f:16, c:6, price:1500, fit:4},
+    ]},
+  {id:"achajour", name:"Achajour", category:"Кафе в парке", address:"просп. Баграмяна 21", auaDist:"0.3 км · 4 мин", ordoDist:"1.4 км · 19 мин", price:"$$", rating:4.4, maps:"https://www.google.com/maps/search/?api=1&query=Achajour+Yerevan", menu:null,
+    dishes:[
+      {name:"Яичный бейгл", kcal:340, p:16, f:14, c:36, price:2200, fit:3},
+      {name:"Овощной салат с фетой", kcal:230, p:8, f:14, c:15, price:1800, fit:4},
+      {name:"Капучино", kcal:110, p:5, f:6, c:9, price:900, fit:4},
+      {name:"Айс-кофе без сахара", kcal:60, p:2, f:2, c:8, price:1200, fit:5},
+      {name:"Сэндвич с индейкой", kcal:380, p:22, f:14, c:38, price:2400, fit:3},
+    ]},
+  {id:"falafel", name:"Falafel Food Court", category:"Фуд-корт", address:"просп. Баграмяна 6", auaDist:"0.4 км · 5 мин", ordoDist:"1.0 км · 13 мин", price:"$", rating:4.4, maps:"https://www.google.com/maps/search/?api=1&query=Falafel+Food+Court+Yerevan", menu:null,
+    dishes:[
+      {name:"Фалафель-ролл", kcal:480, p:14, f:22, c:54, price:1800, fit:3},
+      {name:"Хумус с питой (порция)", kcal:320, p:10, f:16, c:32, price:1200, fit:4},
+      {name:"Салат табуле", kcal:160, p:4, f:6, c:22, price:1000, fit:5},
+      {name:"Лепёшка заатар", kcal:260, p:7, f:9, c:36, price:900, fit:3},
+      {name:"Куриный шаурма-ролл", kcal:520, p:30, f:20, c:50, price:2000, fit:3},
+    ]},
+  {id:"groundzero", name:"Ground Zero Specialty Coffee", category:"Кофейня", address:"ул. Сарьяна 1", auaDist:"0.33 км · 4 мин", ordoDist:"0.95 км · 12 мин", price:"$$", rating:4.2, maps:"https://www.google.com/maps/search/?api=1&query=Ground+Zero+Specialty+Coffee+Yerevan", menu:null,
+    dishes:[
+      {name:"Капучино", kcal:120, p:6, f:6, c:10, price:900, fit:4},
+      {name:"Овсянка с ягодами", kcal:280, p:8, f:6, c:48, price:1600, fit:5},
+      {name:"Авокадо-тост", kcal:340, p:9, f:20, c:30, price:2200, fit:4},
+      {name:"Гранола с йогуртом", kcal:320, p:11, f:10, c:42, price:1800, fit:4},
+      {name:"Круассан", kcal:300, p:6, f:16, c:32, price:1200, fit:2},
+    ]},
+  {id:"greenbean", name:"Green Bean", category:"Кафе", address:"ул. Исаакяна 38", auaDist:"0.46 км · 6 мин", ordoDist:"1.13 км · 15 мин", price:"$$", rating:4.5, maps:"https://www.google.com/maps/search/?api=1&query=Green+Bean+Yerevan", menu:null,
+    dishes:[
+      {name:"Омлет с овощами", kcal:260, p:16, f:18, c:6, price:2100, fit:4},
+      {name:"Салат с фетой и гранатом", kcal:240, p:7, f:16, c:16, price:2000, fit:4},
+      {name:"Бейгл с голубым сыром", kcal:380, p:14, f:18, c:40, price:2300, fit:3},
+      {name:"Спас (йогуртовый суп)", kcal:170, p:6, f:5, c:22, price:1300, fit:4},
+      {name:"Яблочный пирог (кусок)", kcal:320, p:4, f:14, c:44, price:1500, fit:2},
+    ]},
+  {id:"dzen", name:"dZen of food", category:"Веган / диетическая кухня", address:"ул. Маштоца 15/4", auaDist:"0.65 км · 8 мин", ordoDist:"1.18 км · 15 мин", price:"$$", rating:4.9, maps:"https://www.google.com/maps/search/?api=1&query=dZen+of+food+Yerevan", menu:null,
+    dishes:[
+      {name:"Боул с киноа и овощами", kcal:380, p:14, f:14, c:48, price:2800, fit:5},
+      {name:"Крем-суп из тыквы", kcal:190, p:5, f:7, c:26, price:1800, fit:4},
+      {name:"Салат с нутом и авокадо", kcal:320, p:11, f:18, c:28, price:2400, fit:4},
+      {name:"Тофу гриль с овощами", kcal:290, p:20, f:14, c:18, price:2600, fit:5},
+    ]},
+  {id:"futurediner", name:"Future Diner", category:"Веган-ресторан", address:"ул. Маштоца 25", auaDist:"0.73 км · 9 мин", ordoDist:"0.56 км · 7 мин", price:"$$", rating:4.9, maps:"https://www.google.com/maps/search/?api=1&query=Future+Diner+Yerevan", menu:null,
+    dishes:[
+      {name:"Соевая шаурма-ролл", kcal:420, p:18, f:14, c:54, price:2200, fit:3},
+      {name:"Веган-бургер", kcal:460, p:16, f:18, c:56, price:2600, fit:3},
+      {name:"Грибной крем-суп", kcal:210, p:6, f:10, c:24, price:1600, fit:4},
+      {name:"Салат с тофу", kcal:260, p:15, f:12, c:22, price:2000, fit:5},
+    ]},
+  {id:"avocadoqueen", name:"Avocado Queen by Novikov", category:"Ресторан для завтраков", address:"ул. Сарьяна 2", auaDist:"0.34 км · 4 мин", ordoDist:"0.97 км · 12 мин", price:"$$$", rating:4.4, maps:"https://www.google.com/maps/search/?api=1&query=Avocado+Queen+by+Novikov+Yerevan", menu:null,
+    dishes:[
+      {name:"Авокадо-тост с яйцом", kcal:380, p:14, f:24, c:28, price:3200, fit:4},
+      {name:"Салат с киноа и авокадо", kcal:340, p:10, f:20, c:28, price:3400, fit:4},
+      {name:"Смузи-боул ягодный", kcal:300, p:7, f:8, c:48, price:2800, fit:3},
+      {name:"Тартар из лосося", kcal:260, p:22, f:16, c:6, price:4200, fit:5},
+    ]},
+  {id:"garun", name:"Garun Food & More", category:"Здоровое фастфуд-кафе", address:"ул. Варданянц 7", auaDist:"1.44 км · 19 мин", ordoDist:"0.35 км · 4 мин", price:"$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Garun+Food+%26+More+Yerevan", menu:null,
+    dishes:[
+      {name:"Диетический бургер (≈350 ккал)", kcal:350, p:24, f:14, c:30, price:2200, fit:5},
+      {name:"Салат с курицей гриль", kcal:260, p:28, f:10, c:12, price:2100, fit:5},
+      {name:"Безглютеновый сэндвич", kcal:320, p:16, f:12, c:34, price:2000, fit:4},
+      {name:"Шоколадный ролл без сахара", kcal:180, p:6, f:8, c:20, price:1400, fit:4},
+    ]},
+  {id:"tavern", name:"Tavern Yerevan", category:"Грузино-армянская кухня", address:"ул. Пап Тагавора 5", auaDist:"1.24 км · 16 мин", ordoDist:"0.33 км · 4 мин", price:"$$$", rating:4.6, maps:"https://www.google.com/maps/search/?api=1&query=Tavern+Yerevan+restaurant", menu:null,
+    dishes:[
+      {name:"Салат из щавеля", kcal:150, p:4, f:8, c:14, price:1800, fit:5},
+      {name:"Хумус", kcal:280, p:9, f:15, c:26, price:1600, fit:4},
+      {name:"Хинкали (5 шт.)", kcal:380, p:16, f:14, c:44, price:2400, fit:3},
+      {name:"Хачапури имеретинский", kcal:420, p:16, f:20, c:42, price:2800, fit:2},
+      {name:"Куриный шашлык", kcal:340, p:40, f:16, c:2, price:3200, fit:5},
+    ]},
+  {id:"collective", name:"Collective Yerevan", category:"Ресторан", address:"ул. Пушкина 40", auaDist:"0.87 км · 11 мин", ordoDist:"0.38 км · 5 мин", price:"$$$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Collective+Yerevan", menu:null,
+    dishes:[
+      {name:"Тропический салат", kcal:260, p:12, f:14, c:22, price:3400, fit:4},
+      {name:"Тартар из лосося", kcal:240, p:20, f:16, c:4, price:4600, fit:5},
+      {name:"Креветки катаифи", kcal:320, p:18, f:18, c:22, price:4800, fit:3},
+      {name:"Пицца с лососем (2 куска)", kcal:480, p:22, f:20, c:50, price:3600, fit:2},
+    ]},
+  {id:"lavash", name:"Lavash Restaurant", category:"Армянская кухня", address:"ул. Туманяна 21", auaDist:"0.94 км · 12 мин", ordoDist:"0.46 км · 6 мин", price:"$$$", rating:4.6, maps:"https://www.google.com/maps/search/?api=1&query=Lavash+Restaurant+Yerevan", menu:null,
+    dishes:[
+      {name:"Баклажанные рулеты с орехом", kcal:260, p:8, f:18, c:16, price:2400, fit:3},
+      {name:"Форель гриль", kcal:320, p:34, f:18, c:2, price:4200, fit:5},
+      {name:"Овощной салат", kcal:150, p:3, f:7, c:16, price:1600, fit:5},
+      {name:"Стейк из баранины", kcal:480, p:38, f:32, c:2, price:5200, fit:2},
+    ]},
+  {id:"grandost", name:"Grand Ost", category:"Кафе на Площади Республики", address:"Площадь Республики", auaDist:"1.29 км · 17 мин", ordoDist:"0.13 км · 1 мин", price:"$$$", rating:4.6, maps:"https://www.google.com/maps/search/?api=1&query=Grand+Ost+Republic+Square+Yerevan", menu:null,
+    dishes:[
+      {name:"Омлет классический", kcal:240, p:16, f:18, c:4, price:2100, fit:4},
+      {name:"Шакшука", kcal:280, p:14, f:18, c:14, price:2400, fit:4},
+      {name:"Спас", kcal:170, p:6, f:5, c:22, price:1300, fit:4},
+      {name:"Крепы с кремом", kcal:380, p:8, f:18, c:44, price:2200, fit:2},
+    ]},
+  {id:"yasaman", name:"Yasaman Restaurant", category:"Армянская кухня", address:"ул. Екмаляна 1/1", auaDist:"0.65 км · 8 мин", ordoDist:"0.79 км · 10 мин", price:"$$$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Yasaman+Restaurant+Yerevan", menu:null,
+    dishes:[
+      {name:"Овощи гриль", kcal:180, p:4, f:10, c:18, price:2200, fit:5},
+      {name:"Курица с тарагоном", kcal:340, p:36, f:16, c:8, price:4200, fit:4},
+      {name:"Долма из виноградных листьев", kcal:280, p:10, f:14, c:28, price:2600, fit:3},
+      {name:"Стейк говяжий", kcal:420, p:40, f:26, c:2, price:5800, fit:3},
+    ]},
+  {id:"tphilosophy", name:"T Philosophy", category:"Кафе у Каскада", address:"ул. Таманяна 67", auaDist:"0.47 км · 6 мин", ordoDist:"1.11 км · 14 мин", price:"$$$", rating:4.8, maps:"https://www.google.com/maps/search/?api=1&query=T+Philosophy+Yerevan", menu:null,
+    dishes:[
+      {name:"Круассан с яичницей", kcal:380, p:18, f:22, c:28, price:2600, fit:3},
+      {name:"Смузи с базиликом", kcal:140, p:3, f:2, c:26, price:1800, fit:5},
+      {name:"Омлет с бастурмой", kcal:300, p:20, f:20, c:4, price:2400, fit:4},
+      {name:"Панкейки (3 шт.)", kcal:420, p:10, f:14, c:60, price:2200, fit:2},
+    ]},
+  {id:"andrewkitchen", name:"Andrew Kitchen", category:"Кафе", address:"ул. Езника Кохбаци", auaDist:"0.98 км · 13 мин", ordoDist:"0.35 км · 4 мин", price:"$$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Andrew+Kitchen+Yerevan", menu:null,
+    dishes:[
+      {name:"Куриная грудка гриль", kcal:280, p:38, f:10, c:4, price:2800, fit:5},
+      {name:"Яичница (2 яйца)", kcal:200, p:14, f:16, c:2, price:1600, fit:4},
+      {name:"Круассан", kcal:300, p:6, f:16, c:32, price:1200, fit:2},
+      {name:"Паста с томатным соусом", kcal:420, p:12, f:10, c:68, price:2600, fit:2},
+    ]},
+  {id:"khorenatsi", name:"Tavern Yerevan (Хоренаци)", category:"Армянская кухня", address:"ул. Маркса 29", auaDist:"1.92 км · 25 мин", ordoDist:"0.74 км · 9 мин", price:"$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Tavern+Yerevan+Khorenatsi", menu:null,
+    dishes:[
+      {name:"Хинкали (5 шт.)", kcal:380, p:16, f:14, c:44, price:2200, fit:3},
+      {name:"Долма капустная", kcal:260, p:10, f:12, c:26, price:2000, fit:4},
+      {name:"Овощной салат", kcal:150, p:3, f:7, c:16, price:1500, fit:5},
+      {name:"Куриная отбивная", kcal:340, p:32, f:18, c:6, price:2800, fit:4},
+    ]},
+  {id:"saladhaus", name:"Салад Հաուз (Salad Haus)", category:"Столовая / салат-бар", address:"ул. Налбандяна 3", auaDist:"1.33 км · 17 мин", ordoDist:"0.12 км · 1 мин", price:"$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=Salad+Haus+Nalbandyan+Yerevan", menu:null,
+    dishes:[
+      {name:"Оливье лёгкий", kcal:220, p:7, f:10, c:24, price:900, fit:4},
+      {name:"Салат из свежих овощей", kcal:130, p:3, f:5, c:16, price:700, fit:5},
+      {name:"Куриный салат с йогуртовой заправкой", kcal:260, p:22, f:12, c:14, price:1000, fit:5},
+      {name:"Овощное рагу", kcal:190, p:5, f:6, c:26, price:800, fit:4},
+    ]},
+  {id:"sweetli", name:"Sweetli by Lilit", category:"Здоровые десерты / салат-бар", address:"просп. Саят-Новы 4/1", auaDist:"0.93 км · 12 мин", ordoDist:"0.63 км · 8 мин", price:"$$", rating:4.4, maps:"https://www.google.com/maps/search/?api=1&query=Sweetli+by+Lilit+Yerevan", menu:null,
+    dishes:[
+      {name:"Салат с лососем", kcal:280, p:22, f:16, c:10, price:3200, fit:5},
+      {name:"Веганский \"медовый\" торт (кусок)", kcal:280, p:4, f:14, c:34, price:1800, fit:3},
+      {name:"Фисташковый эклер", kcal:260, p:5, f:16, c:24, price:2000, fit:2},
+      {name:"Кофе без кофеина с семенами инжира", kcal:40, p:1, f:1, c:6, price:1500, fit:5},
+    ]},
+  {id:"smaksalad", name:"Smak Salad", category:"Салат-бар", address:"ул. Маштоца 41", auaDist:"0.59 км · 7 мин", ordoDist:"1.14 км · 15 мин", price:"$", rating:4.2, maps:"https://www.google.com/maps/search/?api=1&query=Smak+Salad+Yerevan", menu:null,
+    dishes:[
+      {name:"Табуле", kcal:160, p:4, f:6, c:22, price:900, fit:5},
+      {name:"Свекольный салат", kcal:140, p:3, f:6, c:18, price:800, fit:5},
+      {name:"Печёный картофель с зеленью", kcal:220, p:5, f:6, c:38, price:700, fit:4},
+      {name:"Куриное филе на пару", kcal:220, p:36, f:6, c:2, price:1400, fit:5},
+    ]},
+  {id:"saladhouse", name:"Salad House", category:"Столовая-буфет", address:"ул. Теряна 62", auaDist:"0.87 км · 11 мин", ordoDist:"0.98 км · 13 мин", price:"$", rating:3.8, maps:"https://www.google.com/maps/search/?api=1&query=Salad+House+Teryan+Yerevan", menu:null,
+    dishes:[
+      {name:"Салатное ассорти", kcal:180, p:5, f:8, c:20, price:900, fit:5},
+      {name:"Постный суп", kcal:150, p:5, f:4, c:22, price:700, fit:4},
+      {name:"Голубцы (2 шт.)", kcal:260, p:10, f:12, c:28, price:1000, fit:3},
+      {name:"Тушёные овощи", kcal:170, p:4, f:6, c:24, price:800, fit:5},
+    ]},
+  {id:"buzand", name:"Buzand Cafe Restaurant", category:"Кафе-ресторан", address:"ул. Ханджяна 13/1", auaDist:"1.83 км · 24 мин", ordoDist:"0.62 км · 8 мин", price:"$$$", rating:4.8, maps:"https://www.google.com/maps/search/?api=1&query=Buzand+Cafe+Restaurant+Yerevan", menu:null,
+    dishes:[
+      {name:"Салат груша-фета", kcal:240, p:8, f:16, c:18, price:2400, fit:4},
+      {name:"Курица в апельсиновом соусе", kcal:380, p:34, f:16, c:22, price:3200, fit:3},
+      {name:"Грибной крем-суп", kcal:210, p:6, f:10, c:22, price:1800, fit:4},
+    ]},
+  {id:"kebablab", name:"KEBAB.LAB", category:"Фастфуд", address:"ул. Геворга Кочара 6", auaDist:"0.85 км · 11 мин", ordoDist:"1.22 км · 16 мин", price:"$$", rating:4.7, maps:"https://www.google.com/maps/search/?api=1&query=KEBAB.LAB+Yerevan", menu:null,
+    dishes:[
+      {name:"Кебаб-ролл куриный", kcal:480, p:28, f:18, c:50, price:2200, fit:3},
+      {name:"Хот-дог", kcal:420, p:14, f:22, c:40, price:1800, fit:2},
+      {name:"Бургер классический", kcal:560, p:26, f:28, c:50, price:2600, fit:2},
+      {name:"Салат к кебабу", kcal:120, p:3, f:5, c:14, price:900, fit:5},
+    ]},
+  {id:"keerk", name:"Keerk & Co", category:"Кофейня", address:"просп. Баграмяна 3А", auaDist:"0.18 км · 2 мин", ordoDist:"1.27 км · 16 мин", price:"$$", rating:4.5, maps:"https://www.google.com/maps/search/?api=1&query=Keerk+%26+Co+Yerevan", menu:null,
+    dishes:[
+      {name:"Флэт уайт", kcal:130, p:6, f:7, c:10, price:1200, fit:4},
+      {name:"Сэндвич с курицей", kcal:360, p:24, f:14, c:34, price:2400, fit:4},
+      {name:"Салат с лососем", kcal:280, p:20, f:16, c:12, price:3200, fit:5},
+      {name:"Чизкейк (кусок)", kcal:380, p:6, f:22, c:38, price:2000, fit:2},
+    ]},
+  {id:"gouroo", name:"Gouroo Club & Garden", category:"Кофейня с садом", address:"ул. Сарьяна 13", auaDist:"0.30 км · 4 мин", ordoDist:"0.96 км · 12 мин", price:"$$", rating:4.5, maps:"https://www.google.com/maps/search/?api=1&query=Gouroo+Club+%26+Garden+Yerevan", menu:null,
+    dishes:[
+      {name:"Латте", kcal:150, p:7, f:8, c:12, price:1300, fit:4},
+      {name:"Боул с киноа", kcal:340, p:12, f:14, c:40, price:2600, fit:4},
+      {name:"Греческий салат", kcal:220, p:8, f:16, c:10, price:2200, fit:5},
+      {name:"Чизкейк", kcal:380, p:6, f:22, c:38, price:2000, fit:2},
+    ]},
+  {id:"coffee235", name:"The Coffee 23.5", category:"Кофейня", address:"ул. Сарьяна", auaDist:"0.27 км · 3 мин", ordoDist:"1.00 км · 13 мин", price:"$$", rating:4.6, maps:"https://www.google.com/maps/search/?api=1&query=The+Coffee+23.5+Yerevan", menu:null,
+    dishes:[
+      {name:"Американо", kcal:5, p:0, f:0, c:1, price:900, fit:5},
+      {name:"Капучино", kcal:120, p:6, f:6, c:10, price:1100, fit:4},
+      {name:"Тост с авокадо", kcal:320, p:9, f:18, c:28, price:2100, fit:4},
+      {name:"Чизкейк", kcal:380, p:6, f:22, c:38, price:1900, fit:2},
+    ]},
+];
+
+const STORES = ["Yerevan City", "SAS", "Parma", "Evrika"];
+const PRODUCTS = [
+  {name:"Греческий йогурт 150 г", store:"SAS", kcal:130, p:10, f:5, c:10, price:800, cat:"Молочное"},
+  {name:"Творог 5% 200 г", store:"Yerevan City", kcal:220, p:36, f:10, c:6, price:1200, cat:"Молочное"},
+  {name:"Куриная грудка филе 400 г", store:"Parma", kcal:440, p:92, f:8, c:0, price:2400, cat:"Мясо/рыба"},
+  {name:"Консервы тунец в собств. соку 185 г", store:"Evrika", kcal:190, p:40, f:2, c:0, price:1500, cat:"Мясо/рыба"},
+  {name:"Кефир 1% 500 мл", store:"SAS", kcal:210, p:15, f:5, c:20, price:600, cat:"Молочное"},
+  {name:"Овощной салат готовый 200 г", store:"Yerevan City", kcal:120, p:3, f:6, c:14, price:900, cat:"Готовое"},
+  {name:"Протеиновый йогурт 200 г", store:"Parma", kcal:160, p:20, f:2, c:14, price:900, cat:"Молочное"},
+  {name:"Сыр моцарелла лайт 200 г", store:"SAS", kcal:320, p:28, f:22, c:4, price:1800, cat:"Молочное"},
+  {name:"Лаваш тонкий 1 шт (60 г)", store:"Evrika", kcal:160, p:5, f:1, c:33, price:300, cat:"Хлеб"},
+  {name:"Бананы 1 кг", store:"Yerevan City", kcal:890, p:11, f:3, c:210, price:700, cat:"Фрукты"},
+  {name:"Яблоки 1 кг", store:"Yerevan City", kcal:480, p:2, f:2, c:114, price:600, cat:"Фрукты"},
+  {name:"Рис бурый 500 г (сухой)", store:"SAS", kcal:1750, p:38, f:13, c:365, price:900, cat:"Крупы"},
+  {name:"Гречка 500 г (сухая)", store:"Parma", kcal:1650, p:65, f:15, c:355, price:800, cat:"Крупы"},
+  {name:"Овсянка 500 г", store:"Evrika", kcal:1850, p:65, f:35, c:300, price:700, cat:"Крупы"},
+  {name:"Готовая курица гриль (целая) 1 кг", store:"SAS", kcal:1900, p:270, f:90, c:0, price:3200, cat:"Готовое"},
+  {name:"Варёные яйца (уп. 6 шт.)", store:"Yerevan City", kcal:480, p:36, f:32, c:2, price:1000, cat:"Мясо/рыба"},
+  {name:"Хумус 200 г", store:"SAS", kcal:330, p:16, f:22, c:20, price:1100, cat:"Готовое"},
+  {name:"Овощная смесь замороженная 400 г", store:"Parma", kcal:140, p:6, f:1, c:24, price:900, cat:"Овощи"},
+  {name:"Творожный сыр лайт 150 г", store:"SAS", kcal:240, p:18, f:14, c:8, price:1300, cat:"Молочное"},
+  {name:"Индейка филе 400 г", store:"Yerevan City", kcal:420, p:88, f:6, c:0, price:2600, cat:"Мясо/рыба"},
+  {name:"Огурцы 1 кг", store:"Evrika", kcal:150, p:6, f:1, c:30, price:500, cat:"Овощи"},
+  {name:"Помидоры 1 кг", store:"Evrika", kcal:180, p:9, f:2, c:36, price:600, cat:"Овощи"},
+  {name:"Шпинат свежий 200 г", store:"Yerevan City", kcal:46, p:6, f:1, c:7, price:700, cat:"Овощи"},
+  {name:"Авокадо 1 шт (200 г)", store:"SAS", kcal:320, p:4, f:30, c:12, price:1200, cat:"Овощи"},
+  {name:"Миндаль 100 г", store:"Parma", kcal:580, p:21, f:50, c:22, price:1800, cat:"Орехи"},
+  {name:"Грецкие орехи 100 г", store:"Yerevan City", kcal:650, p:15, f:65, c:14, price:1600, cat:"Орехи"},
+  {name:"Оливковое масло 500 мл", store:"SAS", kcal:4500, p:0, f:500, c:0, price:2800, cat:"Масла"},
+  {name:"Хлеб цельнозерновой 400 г", store:"Evrika", kcal:900, p:36, f:8, c:170, price:800, cat:"Хлеб"},
+  {name:"Тофу 300 г", store:"Parma", kcal:240, p:24, f:15, c:6, price:1400, cat:"Другое"},
+  {name:"Молоко 2.5% 1 л", store:"Yerevan City", kcal:520, p:28, f:25, c:40, price:700, cat:"Молочное"},
+  {name:"Сметана 10% 200 г", store:"SAS", kcal:400, p:6, f:20, c:8, price:700, cat:"Молочное"},
+  {name:"Куриные яйца (10 шт.)", store:"Evrika", kcal:700, p:56, f:48, c:4, price:1400, cat:"Мясо/рыба"},
+  {name:"Фасоль консервированная 400 г", store:"Parma", kcal:340, p:24, f:2, c:52, price:700, cat:"Крупы"},
+  {name:"Чечевица сухая 500 г", store:"Yerevan City", kcal:1650, p:125, f:5, c:300, price:700, cat:"Крупы"},
+  {name:"Морковь 1 кг", store:"Evrika", kcal:350, p:9, f:2, c:70, price:400, cat:"Овощи"},
+  {name:"Брокколи замороженная 400 г", store:"SAS", kcal:130, p:12, f:1, c:10, price:900, cat:"Овощи"},
+  {name:"Куриная колбаса варёная 300 г", store:"Parma", kcal:480, p:48, f:24, c:6, price:1800, cat:"Мясо/рыба"},
+  {name:"Протеиновый батончик 60 г", store:"SAS", kcal:220, p:20, f:8, c:18, price:700, cat:"Готовое"},
+  {name:"Йогурт натуральный 3.2% 400 г", store:"Yerevan City", kcal:260, p:14, f:13, c:22, price:900, cat:"Молочное"},
+  {name:"Сыр сулугуни 250 г", store:"SAS", kcal:700, p:50, f:52, c:2, price:2200, cat:"Молочное"},
+  {name:"Ветчина куриная 200 г", store:"Parma", kcal:260, p:34, f:12, c:4, price:1400, cat:"Мясо/рыба"},
+  {name:"Печенье овсяное диетическое 200 г", store:"Evrika", kcal:800, p:14, f:22, c:130, price:1200, cat:"Снеки"},
+  {name:"Мюсли без сахара 400 г", store:"Yerevan City", kcal:1600, p:40, f:28, c:280, price:1600, cat:"Крупы"},
+  {name:"Рыбные консервы сайра 240 г", store:"SAS", kcal:380, p:36, f:24, c:4, price:1300, cat:"Мясо/рыба"},
+  {name:"Груши 1 кг", store:"Evrika", kcal:460, p:4, f:2, c:110, price:700, cat:"Фрукты"},
+  {name:"Апельсины 1 кг", store:"Yerevan City", kcal:380, p:7, f:1, c:88, price:600, cat:"Фрукты"},
+  {name:"Зелёный чай без сахара 25 пак.", store:"SAS", kcal:5, p:0, f:0, c:1, price:900, cat:"Напитки"},
+  {name:"Вода питьевая 1.5 л", store:"Parma", kcal:0, p:0, f:0, c:0, price:300, cat:"Напитки"},
+  {name:"Протеин сывороточный 500 г", store:"SAS", kcal:1900, p:400, f:20, c:40, price:8500, cat:"Спортпит"},
+  {name:"Семена чиа 200 г", store:"Yerevan City", kcal:940, p:34, f:62, c:84, price:1800, cat:"Орехи"},
+  {name:"Кукуруза консервированная 340 г", store:"Evrika", kcal:250, p:8, f:2, c:50, price:600, cat:"Овощи"},
+  {name:"Оливки без косточек 200 г", store:"Parma", kcal:280, p:2, f:28, c:6, price:900, cat:"Овощи"},
+];
+
+/* Плоский список всех блюд для поиска/фильтров/комбо */
+let DISHES = [];
+CAFES.forEach(cafe=>{
+  cafe.dishes.forEach((d,i)=>{
+    DISHES.push({...d, id: cafe.id+"-"+i, cafeId: cafe.id, cafeName: cafe.name});
+  });
+});
+
+const MEALS = [
+  {key:"breakfast", name:"Завтрак", target:350},
+  {key:"lunch", name:"Обед", target:500},
+  {key:"snack", name:"Перекус", target:200},
+  {key:"dinner", name:"Ужин", target:450},
+];
+const DAILY_TARGET = 1500;
+
+/* =========================================================
+   STATE (localStorage)
+   ========================================================= */
+function todayKey(){ return "log_"+new Date().toISOString().slice(0,10); }
+function loadLog(){ try{ return JSON.parse(localStorage.getItem(todayKey())||"[]"); }catch(e){ return []; } }
+function saveLog(log){ localStorage.setItem(todayKey(), JSON.stringify(log)); }
+function loadFavs(){ try{ return JSON.parse(localStorage.getItem("favs")||"[]"); }catch(e){ return []; } }
+function saveFavs(f){ localStorage.setItem("favs", JSON.stringify(f)); }
+
+let currentMealPick = "lunch";
+let currentDetailCafe = null;
+
+/* =========================================================
+   THEME
+   ========================================================= */
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+}
+function toggleTheme(){
+  const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  applyTheme(current === "dark" ? "light" : "dark");
+}
+applyTheme(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+/* =========================================================
+   NAV
+   ========================================================= */
+function goTab(tab){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  const map = {today:"screen-today", map:"screen-map", shops:"screen-shops", fav:"screen-fav", search:"screen-search", detail:"screen-detail"};
+  document.getElementById(map[tab]).classList.add("active");
+  const btn = document.querySelector('.tab-btn[data-tab="'+tab+'"]');
+  if(btn) btn.classList.add("active");
+  if(tab==="map") renderPlaces();
+  if(tab==="shops") renderProducts();
+  if(tab==="fav") renderFavorites();
+  if(tab==="search"){ setTimeout(()=>document.getElementById("globalSearch").focus(), 50); }
+  window.scrollTo(0,0);
+}
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1800);
+}
+
+/* =========================================================
+   TODAY
+   ========================================================= */
+function renderToday(){
+  const log = loadLog();
+  const eaten = log.reduce((s,x)=>s+x.kcal,0);
+  const remain = Math.max(0, DAILY_TARGET - eaten);
+
+  document.getElementById("ringNum").textContent = remain;
+  document.getElementById("todaySummary").textContent = `Съедено ${eaten} из ${DAILY_TARGET} ккал`;
+
+  const circumference = 314;
+  const ratio = Math.min(1, eaten/DAILY_TARGET);
+  const offset = circumference * (1-ratio);
+  const ring = document.getElementById("ringProgress");
+  ring.setAttribute("stroke-dashoffset", offset);
+  ring.style.stroke = eaten > DAILY_TARGET ? "var(--red)" : "var(--green-500)";
+
+  const planWrap = document.getElementById("mealPlanList");
+  planWrap.innerHTML = MEALS.map(m=>{
+    const eatenForMeal = log.filter(x=>x.meal===m.key).reduce((s,x)=>s+x.kcal,0);
+    return `<div class="meal-row">
+      <div class="meal-row-left">
+        <div class="meal-dot"></div>
+        <div>
+          <div class="meal-name">${m.name}</div>
+          <div class="meal-target">план ≈ ${m.target} ккал</div>
+        </div>
+      </div>
+      <div class="meal-eaten">${eatenForMeal ? eatenForMeal+" ккал" : "—"}</div>
+    </div>`;
+  }).join("");
+
+  const logWrap = document.getElementById("logList");
+  if(log.length===0){
+    logWrap.innerHTML = `<div class="empty-hint">Пока ничего не записано. Нажмите «Записать приём пищи», чтобы начать день.</div>`;
+  } else {
+    logWrap.innerHTML = log.map((item,idx)=>`
+      <div class="log-item">
+        <div>
+          <div class="log-item-name">${item.name}</div>
+          <div class="log-item-meta">${MEALS.find(m=>m.key===item.meal)?.name||""} · ${item.source||""}</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <div class="log-item-kcal">${item.kcal} ккал</div>
+          <span class="remove-x" onclick="removeLogItem(${idx})">×</span>
+        </div>
+      </div>
+    `).join("");
+  }
+}
+function removeLogItem(idx){
+  const log = loadLog();
+  log.splice(idx,1);
+  saveLog(log);
+  renderToday();
+}
+
+/* Log modal */
+function openLogModal(mealKey){
+  currentMealPick = mealKey || "lunch";
+  const wrap = document.getElementById("mealPickWrap");
+  wrap.innerHTML = MEALS.map(m=>`<button class="meal-pick-btn ${m.key===currentMealPick?'sel':''}" onclick="pickMeal('${m.key}')">${m.name}<br><span style="font-weight:400; color:var(--ink-soft); font-size:11.5px;">≈${m.target} ккал</span></button>`).join("");
+  document.getElementById("logSearchInput").value = "";
+  renderLogSearch();
+  document.getElementById("logModalOverlay").classList.add("open");
+}
+function pickMeal(key){
+  currentMealPick = key;
+  document.querySelectorAll(".meal-pick-btn").forEach(b=>b.classList.remove("sel"));
+  openLogModal(key);
+}
+function closeLogModal(){
+  document.getElementById("logModalOverlay").classList.remove("open");
+}
+function renderLogSearch(){
+  const q = document.getElementById("logSearchInput").value.toLowerCase().trim();
+  const list = document.getElementById("logSearchList");
+  let items = [];
+  DISHES.forEach(d=> items.push({name:d.name, kcal:d.kcal, p:d.p, f:d.f, c:d.c, source:d.cafeName}));
+  PRODUCTS.forEach(p=> items.push({name:p.name, kcal:p.kcal, p:p.p, f:p.f, c:p.c, source:p.store}));
+  if(q) items = items.filter(x=>x.name.toLowerCase().includes(q));
+  items = items.slice(0,60);
+  list.innerHTML = items.map(it=>`
+    <div class="modal-row" onclick='addLogItem(${JSON.stringify(it).replace(/'/g,"&#39;")})'>
+      <div>
+        <div class="modal-row-name">${it.name}</div>
+        <div class="modal-row-meta">${it.source} · Б${it.p} Ж${it.f} У${it.c}</div>
+      </div>
+      <div style="font-weight:800; color:var(--green-700);">${it.kcal}</div>
+    </div>
+  `).join("") || `<div class="empty-hint">Ничего не найдено</div>`;
+}
+function addLogItem(item){
+  const log = loadLog();
+  log.push({name:item.name, kcal:item.kcal, p:item.p, f:item.f, c:item.c, source:item.source, meal:currentMealPick});
+  saveLog(log);
+  renderToday();
+  closeLogModal();
+  showToast("Добавлено: "+item.name);
+}
+
+/* =========================================================
+   MAP OF FOOD
+   ========================================================= */
+const MAP_FILTER_DEFS = [
+  {key:"all", label:"Все"},
+  {key:"aua", label:"Рядом с AUA"},
+  {key:"ordo", label:"Рядом с Ordo"},
+  {key:"cheap", label:"$ дёшево"},
+  {key:"healthy", label:"★ Топ по КБЖУ"},
+];
+let activeMapFilter = "all";
+
+function renderMapFilters(){
+  const wrap = document.getElementById("mapFilters");
+  wrap.innerHTML = MAP_FILTER_DEFS.map(f=>`<button class="chip ${f.key===activeMapFilter?'active':''}" onclick="setMapFilter('${f.key}')">${f.label}</button>`).join("");
+}
+function setMapFilter(key){ activeMapFilter = key; renderMapFilters(); renderPlaces(); }
+
+function bestFitStars(cafe){
+  const avg = cafe.dishes.reduce((s,d)=>s+d.fit,0)/cafe.dishes.length;
+  return avg;
+}
+
+function renderPlaces(){
+  renderMapFilters();
+  const q = document.getElementById("mapSearch").value.toLowerCase().trim();
+  let list = CAFES.slice();
+
+  if(activeMapFilter==="aua") list = list.filter(c=> parseFloat(c.auaDist) <= 0.6);
+  if(activeMapFilter==="ordo") list = list.filter(c=> parseFloat(c.ordoDist) <= 0.6);
+  if(activeMapFilter==="cheap") list = list.filter(c=> c.price==="$" || c.price==="$$");
+  if(activeMapFilter==="healthy") list = list.filter(c=> bestFitStars(c) >= 4);
+
+  if(q){
+    list = list.filter(c=> c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.dishes.some(d=>d.name.toLowerCase().includes(q)));
+  }
+
+  const favs = loadFavs();
+  const wrap = document.getElementById("placesList");
+  if(list.length===0){
+    wrap.innerHTML = `<div class="empty-state"><p>Ничего не найдено. Попробуйте другой запрос.</p></div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(c=>{
+    const isFav = favs.includes("cafe-"+c.id);
+    return `<div class="card place-card" onclick="openDetail('${c.id}')">
+      <div class="place-top">
+        <div>
+          <div class="place-name">${c.name}</div>
+          <div class="place-cat">${c.category}</div>
+        </div>
+        <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation(); toggleFav('cafe-${c.id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+        </button>
+      </div>
+      <div class="place-addr">📍 ${c.address}</div>
+      <div class="place-meta">
+        <span class="meta-tag dist">от AUA: ${c.auaDist}</span>
+        <span class="meta-tag dist">от Ordo: ${c.ordoDist}</span>
+      </div>
+      <div class="place-bottom">
+        <span class="stars">${c.rating?`★ ${c.rating}`:"на кампусе AUA"}</span>
+        <span class="price-range">${c.price}</span>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function openDetail(cafeId){
+  currentDetailCafe = cafeId;
+  const c = CAFES.find(x=>x.id===cafeId);
+  document.getElementById("detailName").textContent = c.name;
+  const favs = loadFavs();
+  const isFav = favs.includes("cafe-"+c.id);
+  document.getElementById("detailCardWrap").innerHTML = `
+    <div class="card" style="padding:16px;">
+      <div class="place-cat" style="margin-bottom:6px;">${c.category}</div>
+      <div class="place-addr">📍 ${c.address}</div>
+      <div class="place-meta">
+        <span class="meta-tag dist">от AUA: ${c.auaDist}</span>
+        <span class="meta-tag dist">от Ordo: ${c.ordoDist}</span>
+        ${c.rating?`<span class="meta-tag">★ ${c.rating}</span>`:""}
+        <span class="meta-tag">${c.price}</span>
+      </div>
+      ${c.note?`<div style="margin-top:12px; padding:10px 12px; background:var(--green-50); border-radius:12px; font-size:12.5px; color:var(--ink-soft); line-height:1.5;">ℹ️ ${c.note}</div>`:""}
+      <div class="detail-links">
+        <a class="link-btn primary" href="${c.maps}" target="_blank" rel="noopener">Google Maps</a>
+        <button class="link-btn" onclick="toggleFav('cafe-${c.id}'); openDetail('${c.id}')">${isFav?'♥ В избранном':'♡ В избранное'}</button>
+      </div>
+    </div>
+  `;
+  const dishesWrap = document.getElementById("detailDishes");
+  dishesWrap.innerHTML = c.dishes.map((d,i)=>renderDishRow({...d, id:c.id+"-"+i, cafeName:c.name})).join("");
+  goTab("detail");
+}
+
+function fitLabel(fit){
+  const stars = "★".repeat(fit)+"☆".repeat(5-fit);
+  const labels = {5:"идеально", 4:"хорошо", 3:"иногда", 2:"редко", 1:"лучше не брать"};
+  return `<span style="color:${fit>=4?'var(--green-600)':fit===3?'var(--amber)':'var(--red)'}">${stars} ${labels[fit]}</span>`;
+}
+
+function renderDishRow(d){
+  const favs = loadFavs();
+  const isFav = favs.includes("dish-"+d.id);
+  return `<div class="dish-card">
+    <div>
+      <div class="dish-name">${d.name}</div>
+      <div class="dish-macros">Б ${d.p} г · Ж ${d.f} г · У ${d.c} г${d.price?` · ${d.price} ֏`:""}</div>
+      <div class="dish-badge">${fitLabel(d.fit)}</div>
+    </div>
+    <div class="dish-right">
+      <div class="dish-kcal">${d.kcal}</div>
+      <div class="dish-actions">
+        <button class="icon-btn ${isFav?'active':''}" onclick='toggleFav("dish-${d.id}"); this.closest(".dish-card").querySelector(".dish-actions .icon-btn").classList.toggle("active")'>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav?'currentColor':'none'}" stroke="currentColor" stroke-width="2.4"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+        </button>
+        <button class="icon-btn add" onclick='quickAdd(${JSON.stringify({name:d.name,kcal:d.kcal,p:d.p,f:d.f,c:d.c,source:d.cafeName}).replace(/'/g,"&#39;")})'>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+function quickAdd(item){
+  const log = loadLog();
+  log.push({...item, meal:"lunch"});
+  saveLog(log);
+  showToast("Добавлено в «Сегодня»: "+item.name);
+}
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+function toggleFav(key){
+  let favs = loadFavs();
+  if(favs.includes(key)) favs = favs.filter(f=>f!==key);
+  else favs.push(key);
+  saveFavs(favs);
+  if(document.getElementById("screen-map").classList.contains("active")) renderPlaces();
+  if(document.getElementById("screen-fav").classList.contains("active")) renderFavorites();
+}
+function renderFavorites(){
+  const favs = loadFavs();
+  const wrap = document.getElementById("favList");
+  if(favs.length===0){
+    wrap.innerHTML = `<div class="empty-state"><p>Пока нет избранного.<br>Нажимайте ♡ на карточках блюд и кафе.</p></div>`;
+    return;
+  }
+  let html = "";
+  const favCafes = favs.filter(f=>f.startsWith("cafe-")).map(f=>CAFES.find(c=>c.id===f.slice(5))).filter(Boolean);
+  const favDishIds = favs.filter(f=>f.startsWith("dish-")).map(f=>f.slice(5));
+  const favDishes = DISHES.filter(d=>favDishIds.includes(d.id));
+
+  if(favCafes.length){
+    html += `<div class="section-title">Места</div>`;
+    html += favCafes.map(c=>`<div class="card place-card" onclick="openDetail('${c.id}')">
+      <div class="place-top">
+        <div><div class="place-name">${c.name}</div><div class="place-cat">${c.category}</div></div>
+        <button class="fav-btn active" onclick="event.stopPropagation(); toggleFav('cafe-${c.id}')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+        </button>
+      </div>
+      <div class="place-addr">📍 ${c.address}</div>
+    </div>`).join("");
+  }
+  if(favDishes.length){
+    html += `<div class="section-title">Блюда</div><div class="card">`;
+    html += favDishes.map(d=>renderDishRow(d)).join("");
+    html += `</div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+/* =========================================================
+   SHOPS
+   ========================================================= */
+/* Ближайшие филиалы сетей к AUA (учёба) и Ordo Learning Hub (работа).
+   Ориентировочные данные — при необходимости уточните под реальные адреса филиалов. */
+const STORE_LOCATIONS = {
+  "Yerevan City": {nearStudy:true,  nearWork:true},
+  "SAS":          {nearStudy:true,  nearWork:false},
+  "Parma":        {nearStudy:false, nearWork:true},
+  "Evrika":       {nearStudy:true,  nearWork:true},
+};
+
+let activeShopFilter = "all";
+const SHOP_FILTER_DEFS = [
+  {key:"all", label:"Все"},
+  {key:"nearStudy", label:"Рядом с учёбой"},
+  {key:"nearWork", label:"Рядом с работой"},
+  {key:"Yerevan City", label:"Yerevan City"},
+  {key:"SAS", label:"SAS"},
+  {key:"Parma", label:"Parma"},
+  {key:"Evrika", label:"Evrika"},
+  {key:"protein", label:"Белок 20 г+"},
+];
+function renderShopFilters(){
+  document.getElementById("shopFilters").innerHTML = SHOP_FILTER_DEFS.map(f=>`<button class="chip ${f.key===activeShopFilter?'active':''}" onclick="setShopFilter('${f.key}')">${f.label}</button>`).join("");
+}
+function setShopFilter(key){ activeShopFilter = key; renderShopFilters(); renderProducts(); }
+
+function renderProducts(){
+  renderShopFilters();
+  const q = document.getElementById("shopSearch").value.toLowerCase().trim();
+  let list = PRODUCTS.slice();
+  const specialFilters = ["all","nearStudy","nearWork","protein"];
+  if(activeShopFilter==="nearStudy") list = list.filter(p=> STORE_LOCATIONS[p.store]?.nearStudy);
+  if(activeShopFilter==="nearWork") list = list.filter(p=> STORE_LOCATIONS[p.store]?.nearWork);
+  if(!specialFilters.includes(activeShopFilter)) list = list.filter(p=>p.store===activeShopFilter);
+  if(activeShopFilter==="protein") list = list.filter(p=>p.p>=20);
+  if(q) list = list.filter(p=>p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+
+  const wrap = document.getElementById("productsGrid");
+  if(list.length===0){ wrap.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><p>Ничего не найдено</p></div>`; return; }
+  wrap.innerHTML = list.map(p=>`
+    <div class="card product-card">
+      <div>
+        <div class="product-store">${p.store}</div>
+        <div class="product-name">${p.name}</div>
+      </div>
+      <div class="product-macros">Б${p.p} · Ж${p.f} · У${p.c} (на весь объём)</div>
+      <div class="product-bottom">
+        <span class="product-price">${p.price} ֏</span>
+        <span class="product-kcal">${p.kcal} ккал</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* =========================================================
+   GLOBAL SEARCH
+   ========================================================= */
+function renderGlobalSearch(){
+  const q = document.getElementById("globalSearch").value.toLowerCase().trim();
+  const wrap = document.getElementById("globalResults");
+  if(!q){ wrap.innerHTML = `<div class="empty-state"><p>Начните вводить название блюда, кафе или продукта</p></div>`; return; }
+
+  const dishMatches = DISHES.filter(d=>d.name.toLowerCase().includes(q) || d.cafeName.toLowerCase().includes(q)).slice(0,20);
+  const prodMatches = PRODUCTS.filter(p=>p.name.toLowerCase().includes(q)).slice(0,10);
+
+  let html = "";
+  if(dishMatches.length){
+    html += `<div class="section-title">Блюда</div><div class="card">` + dishMatches.map(d=>renderDishRow(d)).join("") + `</div>`;
+  }
+  if(prodMatches.length){
+    html += `<div class="section-title">Продукты</div><div class="product-grid">` + prodMatches.map(p=>`
+      <div class="card product-card">
+        <div><div class="product-store">${p.store}</div><div class="product-name">${p.name}</div></div>
+        <div class="product-macros">Б${p.p} · Ж${p.f} · У${p.c}</div>
+        <div class="product-bottom"><span class="product-price">${p.price} ֏</span><span class="product-kcal">${p.kcal} ккал</span></div>
+      </div>`).join("") + `</div>`;
+  }
+  if(!dishMatches.length && !prodMatches.length){
+    html = `<div class="empty-state"><p>Ничего не найдено по запросу «${q}»</p></div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+document.querySelectorAll(".meal-row").forEach(()=>{});
+document.getElementById("logModalOverlay").addEventListener("click", (e)=>{ if(e.target.id==="logModalOverlay") closeLogModal(); });
+renderToday();
+renderMapFilters();
+</script>
+</body>
+</html>
